@@ -1,0 +1,58 @@
+{
+    "_comment": "Edit these fields to match your target journal. Used by the figures/tables agent and the overall tone of review.",
+
+    "journal_name": "Journal of the American Medical Association (JAMA Neurology)",
+    "paper_type": "Original research article",
+    "field": "Clinical neuroscience / computational neurology",
+    "word_limit": 3000,
+    "abstract_word_limit": 300,
+    "abstract_structure": "structured (Background, Methods, Results, Conclusions)",
+    "max_references": 40,
+    "max_figures": 5,
+    "max_tables": 5,
+    "figure_format": "TIFF or EPS",
+    "figure_resolution_dpi": 300,
+    "requires_data_availability_statement": true,
+    "requires_code_availability_statement": true,
+    "requires_ethics_statement": true,
+    "citation_style": "numbered superscript",
+    "style_guide": "AMA Manual of Style",
+
+    "custom_notes": [
+        "Avoid first person in abstracts",
+        "Report confidence intervals alongside p-values",
+        "Define all statistical methods in Methods section"
+    ],
+
+    "_comment_weights": "Optional dimension weights for composite readiness score (0.0-2.0, default 1.0)",
+    "dimension_weights": {
+        "vsnc": 1.0,
+        "intro": 1.0,
+        "sentences": 0.8,
+        "voice": 0.6,
+        "conciseness": 0.8,
+        "paragraphs": 0.8,
+        "acronyms": 0.5,
+        "figures_tables": 1.0,
+        "reproducibility": 1.2,
+        "statistics": 1.5,
+        "methods_completeness": 1.2,
+        "consistency": 1.0,
+        "discussion": 1.0,
+        "abstract": 1.0,
+        "reviewer2": 1.5,
+        "missing_refs": 0.8,
+        "ref_quality": 0.6,
+        "positioning": 1.0,
+        "guidelines": 1.5,
+        "response": 0.3,
+        "fig_story": 0.8,
+        "fig_composition": 0.8,
+        "fig_format": 0.8,
+        "fig_caption": 0.8,
+        "fig_statistics": 1.0,
+        "fig_color": 0.8,
+        "fig_typography": 0.6,
+        "fig_consistency": 0.8
+    }
+}

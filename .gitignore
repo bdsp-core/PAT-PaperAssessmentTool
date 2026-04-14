@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment / secrets
+.env
+.env.local
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Tool outputs (generated at runtime)
+reports/
+outputs/
+rerun-reports/
+judging/
+papers/
+repos/
+*.zip
+
+# Sample / test papers and PDFs
+*.pdf
+
+# Checkpoints (resumable state)
+.checkpoint_*.json
+*.ckpt.json
