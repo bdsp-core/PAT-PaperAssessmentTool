@@ -22,7 +22,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from agents import AgentResult
+from pat.agents import AgentResult
 
 
 # ---------------------------------------------------------------------------
@@ -143,7 +143,7 @@ def save_edit_checkpoint(
     output_dir: Path,
 ) -> None:
     """Persist figure edit loop progress for crash recovery."""
-    from figure_editor import FigureEditLoopResult
+    from pat.figure_editor import FigureEditLoopResult
     if not isinstance(edit_results, FigureEditLoopResult):
         return
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -186,7 +186,7 @@ def load_edit_checkpoint(paper_path: str, output_dir: Path):
         return None
 
     try:
-        from figure_editor import FigureEditLoopResult, FigureEditResult
+        from pat.figure_editor import FigureEditLoopResult, FigureEditResult
         data = json.loads(path.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError, ImportError):
         return None

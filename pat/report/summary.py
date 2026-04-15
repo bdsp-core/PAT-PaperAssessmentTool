@@ -30,7 +30,7 @@ def write_summary_dashboard(
     Returns:
         The written dashboard's ``Path``.
     """
-    from diff import parse_nlp_metrics_from_summary, parse_report
+    from pat.diff import parse_nlp_metrics_from_summary, parse_report
 
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)

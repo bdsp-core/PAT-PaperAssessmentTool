@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pat-review"
+version = "0.1.0"
+description = "PAT - Paper Assessment Tool: a multi-agent AI pipeline for reviewing scientific manuscripts before journal submission."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Rohan Bhansali" },
+    { name = "Brandon Westover" },
+]
+keywords = [
+    "scientific writing",
+    "manuscript review",
+    "peer review",
+    "LLM agents",
+    "biomedical",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "ollama>=0.4.0",
+    "anthropic>=0.40.0",
+    "rich>=13.0.0",
+    "markdown>=3.5",
+    "pymupdf>=1.24.0",
+    "Pillow>=10.0.0",
+    "requests>=2.31.0",
+    "typing_extensions>=4.9.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/bdsp-core/PAT-PaperAssessmentTool"
+Repository = "https://github.com/bdsp-core/PAT-PaperAssessmentTool"
+Issues = "https://github.com/bdsp-core/PAT-PaperAssessmentTool/issues"
+
+[project.scripts]
+pat = "pat.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["pat", "pat.*"]
+
+[tool.setuptools.package-data]
+pat = ["py.typed"]

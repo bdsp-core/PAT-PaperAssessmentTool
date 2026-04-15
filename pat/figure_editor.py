@@ -26,8 +26,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from agents import AgentResult, BaseAgent
-    from providers import LLMProvider
+    from pat.agents import AgentResult, BaseAgent
+    from pat.providers import LLMProvider
 
 
 # ---------------------------------------------------------------------------
@@ -327,8 +327,8 @@ def run_edit_loop(
     Returns:
         FigureEditLoopResult with all iterations, diffs, and figure paths.
     """
-    from agents import Context, AgentResult
-    from providers import OllamaProvider
+    from pat.agents import Context, AgentResult
+    from pat.providers import OllamaProvider
 
     # Create coding model provider
     coder = OllamaProvider(model=coder_model)

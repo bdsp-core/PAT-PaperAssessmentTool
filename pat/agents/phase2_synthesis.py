@@ -17,7 +17,7 @@ from __future__ import annotations
 import textwrap
 import time
 
-from parser import get_section, get_sections_combined
+from pat.parser import get_section, get_sections_combined
 
 from ._reporting_guidelines import REPORTING_GUIDELINES
 from .base import (

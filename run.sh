@@ -91,12 +91,12 @@ fi
 # shellcheck disable=SC1091
 source .venv/bin/activate
 
-# ---- Dependency install (only when something is actually missing) --------
-if ! python3 -c "import ollama, rich, markdown, fitz, typing_extensions, PIL, requests" &>/dev/null; then
-    echo "  Installing dependencies ..."
-    pip install -q -r requirements.txt
+# ---- Package install (only when something is actually missing) ----------
+if ! python3 -c "import pat, ollama, rich, markdown, fitz, typing_extensions, PIL, requests" &>/dev/null; then
+    echo "  Installing PAT package and dependencies ..."
+    pip install -q -e .
 fi
-echo "  [ok] Dependencies installed"
+echo "  [ok] Package installed"
 
 # ---- Paper present -------------------------------------------------------
 if [ ! -f "$PAPER" ]; then
@@ -111,7 +111,7 @@ for MODEL in "${MODELS[@]}"; do
     TAG="${MODEL##*:}"
     OUTDIR="reports/$TAG"
     echo "  -- Running with $MODEL -> $OUTDIR --"
-    python3 run_review.py "$PAPER" \
+    pat "$PAPER" \
         --model "$MODEL" \
         --output-dir "$OUTDIR" \
         --fresh --html --ref-backend pubmed \

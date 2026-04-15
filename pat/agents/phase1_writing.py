@@ -19,7 +19,7 @@ from __future__ import annotations
 import textwrap
 import time
 
-from parser import get_sections_combined
+from pat.parser import get_sections_combined
 
 from .base import AgentResult, BaseAgent, Context, _journal_context
 

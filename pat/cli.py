@@ -1,44 +1,46 @@
-#!/usr/bin/env python3
 """
-run_review.py - command-line entry point for the PAT review pipeline.
+Command-line entry point for the PAT (Paper Assessment Tool) review pipeline.
+
+After installation (``pip install -e .``) the ``pat`` console script resolves
+to :func:`main`.  The same entry point is available via ``python -m pat``.
 
 Usage examples
 --------------
 Full review (Ollama, default model)::
 
-    python run_review.py paper.txt
+    pat paper.txt
 
 Review a PDF (text + figures auto-extracted)::
 
-    python run_review.py paper.pdf
+    pat paper.pdf
 
 With code for reproducibility checking::
 
-    python run_review.py paper.txt --code-file analysis.py
+    pat paper.txt --code-file analysis.py
 
 Run only specific agents::
 
-    python run_review.py paper.txt --agents vsnc,intro,paragraphs
+    pat paper.txt --agents vsnc,intro,paragraphs
 
 Use Anthropic backend::
 
-    python run_review.py paper.txt --provider anthropic
+    pat paper.txt --provider anthropic
 
 Use a different Ollama model::
 
-    python run_review.py paper.txt --model llama3.1:8b
+    pat paper.txt --model llama3.1:8b
 
 List all available agents::
 
-    python run_review.py --list-agents
+    pat --list-agents
 
 Generate HTML report too::
 
-    python run_review.py paper.txt --html
+    pat paper.txt --html
 
 Dry run (show what would run, don't call the model)::
 
-    python run_review.py paper.txt --dry-run
+    pat paper.txt --dry-run
 
 Reports are saved to ``reports/review_<paper>_YYYYMMDD_HHMMSS.md`` (and
 ``.html`` when ``--html`` is passed).
@@ -56,14 +58,14 @@ from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-from agents import (
+from pat.agents import (
     AGENT_REGISTRY,
     ALL_AGENTS,
     AgentResult,
     Context,
     create_ref_backend,
 )
-from checkpoint import (
+from pat.checkpoint import (
     checkpoint_exists,
     clear_checkpoint,
     clear_edit_checkpoint,
@@ -71,10 +73,10 @@ from checkpoint import (
     save_checkpoint,
     save_edit_checkpoint,
 )
-from diff import compare_reviews, format_revision_progress
-from parser import parse_sections
-from providers import PROVIDER_DEFAULTS, OllamaProvider, create_provider
-from report import (
+from pat.diff import compare_reviews, format_revision_progress
+from pat.parser import parse_sections
+from pat.providers import PROVIDER_DEFAULTS, OllamaProvider, create_provider
+from pat.report import (
     write_annotated_manuscript,
     write_html_report,
     write_markdown_report,
@@ -86,7 +88,7 @@ from report import (
 # ---------------------------------------------------------------------------
 
 try:
-    from ui import (
+    from pat.ui import (
         console,
         create_streaming_callback,
         print_agent_done,
@@ -288,7 +290,7 @@ def _estimate_cost(
     config: dict,
 ) -> None:
     """Print a per-agent token / cost breakdown without calling the model."""
-    from parser import get_section, get_sections_combined
+    from pat.parser import get_section, get_sections_combined
 
     total_input = 0
     total_output = 0
@@ -570,7 +572,7 @@ def _build_arg_parser() -> argparse.ArgumentParser:
         "--config", default=None,
         help=(
             "Path to journal config JSON "
-            "(default: review_config.json if present)"
+            "(see examples/review_config.json for a template)"
         ),
     )
 
@@ -1034,7 +1036,7 @@ def _run_figure_edit_loop(
     if not (fig_scripts_dir.exists() and fig_dir_path.exists()):
         return None
 
-    from figure_editor import run_edit_loop
+    from pat.figure_editor import run_edit_loop
 
     figure_agent_ids = (
         "fig_story", "fig_composition", "fig_color",
@@ -1063,7 +1065,7 @@ def _run_figure_edit_loop(
 
     ui_cbs: dict[str, object] = {}
     if HAS_RICH:
-        from ui import (
+        from pat.ui import (
             print_edit_iteration,
             print_edit_retry,
             print_edit_review_done,
@@ -1104,7 +1106,7 @@ def _run_figure_edit_loop(
             )
             total_scripts = sum(len(itr) for itr in edit_results.iterations)
             # Note: we use print_edit_summary via the earlier ui import path.
-            from ui import print_edit_summary  # local to keep import lazy
+            from pat.ui import print_edit_summary  # local to keep import lazy
             print_edit_summary(
                 edit_results.total_iterations,
                 edit_results.total_elapsed,
@@ -1345,7 +1347,7 @@ def main() -> None:
     agreement_data = None
     if len(results) >= 3:
         try:
-            from agreement import compute_agreement
+            from pat.agreement import compute_agreement
             agreement_data = compute_agreement(results, sections)
         except Exception:
             # Agreement analysis is a nicety; never fail the run for it.
@@ -1393,7 +1395,7 @@ def main() -> None:
 
 def _run_watch_mode(paper_path: str, config: dict) -> None:
     """Watch ``paper_path`` and re-run the programmatic metrics on every save."""
-    from metrics import compute_metrics
+    from pat.metrics import compute_metrics
 
     last_mtime = 0.0
     print(f"  Watching {paper_path} for changes... (Ctrl+C to stop)\n")

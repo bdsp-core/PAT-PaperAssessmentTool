@@ -3,7 +3,7 @@ PAT (Paper Assessment Tool) - report package.
 
 Public API for callers of :mod:`run_review`::
 
-    from report import (
+    from pat.report import (
         write_markdown_report,
         write_html_report,
         write_annotated_manuscript,

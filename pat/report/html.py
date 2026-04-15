@@ -408,7 +408,7 @@ def write_html_report(
     radar_html = ""
     nlp_html = ""
     if has_scores and comparison and old_report_path:
-        from diff import parse_report
+        from pat.diff import parse_report
         old_parsed = parse_report(old_report_path)
         old_scores_map = {
             name: info["score"] for name, info in old_parsed.items()

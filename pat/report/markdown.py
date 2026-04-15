@@ -55,7 +55,7 @@ def write_markdown_report(
     lines += ["", "---", ""]
 
     if agreement:
-        from agreement import format_agreement_text
+        from pat.agreement import format_agreement_text
         lines.append(format_agreement_text(agreement))
         lines.append("---")
         lines.append("")

@@ -1,6 +1,6 @@
 # PAT - Paper Assessment Tool
 
-![PAT-PaperBoy-CrispyPineapple](PaperBoyCrispyPineapplePAT.png)
+![PAT-PaperBoy-CrispyPineapple](assets/PaperBoyCrispyPineapplePAT.png)
 
 Multi-agent AI pipeline for reviewing scientific manuscripts before journal
 submission. Thirty-one specialized agents evaluate distinct dimensions of
@@ -17,16 +17,29 @@ drafted Response to Reviewers.
 **Free.** Literature search uses the PubMed E-utilities and bioRxiv REST APIs;
 no paid keys are required.
 
+## Installation
+
+```bash
+git clone https://github.com/bdsp-core/PAT-PaperAssessmentTool.git
+cd PAT-PaperAssessmentTool
+pip install -e .
+```
+
+This installs the `pat` console script along with every dependency.
+Python 3.10 or newer is required.
+
 ## Quick Start
 
 ```bash
 # One-command run (handles venv, dependencies, model pull)
 ./run.sh my_paper.pdf
 
-# Or manually
-pip install -r requirements.txt
+# Or run the CLI directly
 ollama pull qwen3.5:27b-bf16
-python run_review.py my_paper.pdf --html
+pat my_paper.pdf --html
+
+# As a Python module
+python -m pat my_paper.pdf --html
 ```
 
 ## Agents
@@ -64,58 +77,58 @@ python run_review.py my_paper.pdf --html
 
 ```bash
 # Basic review
-python run_review.py paper.pdf
+pat paper.pdf
 
 # HTML report with radar chart, heatmap, and scoring
-python run_review.py paper.pdf --html
+pat paper.pdf --html
 
 # With code for reproducibility checking
-python run_review.py paper.pdf --code-file analysis.py
+pat paper.pdf --code-file analysis.py
 
 # With explicit figure images for multimodal analysis
-python run_review.py paper.pdf --figures fig1.png fig2.png
+pat paper.pdf --figures fig1.png fig2.png
 
 # Run only specific agents
-python run_review.py paper.pdf --agents vsnc,intro,paragraphs,discussion
+pat paper.pdf --agents vsnc,intro,paragraphs,discussion
 
 # Reference search backends
-python run_review.py paper.pdf --ref-backend pubmed           # default
-python run_review.py paper.pdf --ref-backend biorxiv
-python run_review.py paper.pdf --ref-backend pubmed+biorxiv   # most thorough
-python run_review.py paper.pdf --ref-backend none             # skip refs
+pat paper.pdf --ref-backend pubmed           # default
+pat paper.pdf --ref-backend biorxiv
+pat paper.pdf --ref-backend pubmed+biorxiv   # most thorough
+pat paper.pdf --ref-backend none             # skip refs
 
 # Use Anthropic Claude (with prompt caching for cost savings)
-python run_review.py paper.pdf --provider anthropic
+pat paper.pdf --provider anthropic
 
 # Use a different Ollama model
-python run_review.py paper.pdf --model llama3.1:8b
+pat paper.pdf --model llama3.1:8b
 
 # Compare with a previous review (tracks revision progress)
-python run_review.py paper_v2.pdf --compare reports/review_paper_v1_*.md
+pat paper_v2.pdf --compare reports/review_paper_v1_*.md
 
 # Generate annotated manuscript with inline comments
-python run_review.py paper.pdf --annotate
+pat paper.pdf --annotate
 
 # Estimate token/cost without running
-python run_review.py paper.pdf --estimate
+pat paper.pdf --estimate
 
 # Resume after a crash (checkpoint auto-saved after each agent)
-python run_review.py paper.pdf --resume
+pat paper.pdf --resume
 
 # Interactive rewrite mode (REPL after review)
-python run_review.py paper.pdf --interactive
+pat paper.pdf --interactive
 
 # Custom journal config
-python run_review.py paper.pdf --config review_config.json
+pat paper.pdf --config review_config.json
 
 # See all agent IDs
-python run_review.py --list-agents
+pat --list-agents
 
 # Parallel execution (API providers)
-python run_review.py paper.pdf --provider anthropic --parallel 5
+pat paper.pdf --provider anthropic --parallel 5
 
 # Dry run (show plan without calling model)
-python run_review.py paper.pdf --dry-run
+pat paper.pdf --dry-run
 ```
 
 Reports are saved to `reports/review_<papername>_YYYYMMDD_HHMMSS.md`
@@ -201,10 +214,10 @@ Compare successive drafts with quantitative score deltas:
 
 ```bash
 # First review
-python run_review.py paper_v1.pdf --html -o reports/v1
+pat paper_v1.pdf --html -o reports/v1
 
 # After revisions, compare
-python run_review.py paper_v2.pdf --html --compare reports/v1/review_paper_v1_*.md
+pat paper_v2.pdf --html --compare reports/v1/review_paper_v1_*.md
 ```
 
 The output shows what improved, what persists, what regressed, and what's new,
@@ -218,7 +231,7 @@ Local inference. No API keys needed.
 
 ```bash
 ollama pull qwen3.5:27b-bf16
-python run_review.py paper.pdf
+pat paper.pdf
 ```
 
 Any Ollama model works. Multimodal models (e.g. `llava`, `llama3.2-vision`,
@@ -231,8 +244,8 @@ calls, reducing cost by roughly 50% for multi-agent reviews.
 
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
-python run_review.py paper.pdf --provider anthropic
-python run_review.py paper.pdf --provider anthropic --model claude-sonnet-4-20250514
+pat paper.pdf --provider anthropic
+pat paper.pdf --provider anthropic --model claude-sonnet-4-20250514
 ```
 
 ## Checkpoint / Resume
@@ -241,13 +254,13 @@ Each agent's results are checkpointed after completion. If the process
 crashes you can pick up where you left off:
 
 ```bash
-python run_review.py paper.pdf --resume    # use the latest checkpoint
-python run_review.py paper.pdf --fresh     # ignore checkpoints, start over
+pat paper.pdf --resume    # use the latest checkpoint
+pat paper.pdf --fresh     # ignore checkpoints, start over
 ```
 
 ## Configuring for Your Journal
 
-Edit `review_config.json` with your target journal's specs:
+Copy `examples/review_config.json` and edit it with your target journal's specs:
 
 ```json
 {
@@ -264,31 +277,70 @@ Edit `review_config.json` with your target journal's specs:
 }
 ```
 
+Pass the edited file with `pat paper.pdf --config path/to/config.json`.
+
 ## Repository Layout
 
 ```
-agents/           Agent package: base types, phase modules, reference backends
-report/           Report package: markdown, HTML, charts, annotations, summary
-run_review.py     Command-line entry point
-providers.py      Ollama / Anthropic provider abstraction
-parser.py         Scientific-paper section parser
-metrics.py        Programmatic text metrics (no LLM)
-agreement.py      Inter-agent agreement analysis (Fleiss' kappa)
-checkpoint.py     Crash-recovery checkpoints
-diff.py           Revision-progress diff across two runs
-figure_editor.py  Optional Phase 4 figure improvement loop
-ui.py             Rich terminal UI (optional)
-run.sh            Convenience wrapper (environment + models + run)
-review_config.json Journal configuration template
+PAT-PaperAssessmentTool/
+├── README.md
+├── LICENSE
+├── pyproject.toml                     Package metadata and `pat` CLI entry point
+├── requirements.txt                   Flat dependency list (mirrors pyproject.toml)
+├── run.sh                             Convenience wrapper (env + models + review)
+├── assets/
+│   └── PaperBoyCrispyPineapplePAT.png
+├── examples/
+│   └── review_config.json             Journal configuration template
+└── pat/
+    ├── __init__.py
+    ├── __main__.py                    Enables `python -m pat`
+    ├── cli.py                         Command-line orchestrator
+    ├── parser.py                      Scientific-paper section parser
+    ├── metrics.py                     Programmatic text metrics (no LLM)
+    ├── providers.py                   Ollama / Anthropic provider abstraction
+    ├── agreement.py                   Inter-agent agreement (Fleiss' kappa)
+    ├── checkpoint.py                  Crash-recovery checkpoints
+    ├── diff.py                        Revision-progress diff across two runs
+    ├── figure_editor.py               Phase 4 figure improvement loop
+    ├── ui.py                          Rich terminal UI
+    ├── agents/                        31 specialized review agents
+    │   ├── __init__.py                Public re-exports
+    │   ├── base.py                    AgentResult, Context, BaseAgent, parsers
+    │   ├── constants.py               Named constants for token budgets, etc.
+    │   ├── registry.py                ALL_AGENTS and AGENT_REGISTRY
+    │   ├── reference_backends.py      PubMed / bioRxiv / combined backends
+    │   ├── phase1_writing.py          VSNC, intro, sentences, voice, ...
+    │   ├── phase1_content.py          Metrics, figures, reproducibility, stats
+    │   ├── phase2_synthesis.py        Consistency, discussion, abstract, R2
+    │   ├── phase2_references.py       Missing / reference-quality agents
+    │   ├── phase3_final.py            Orchestrator, checklist, response
+    │   ├── figure_agents.py           Eight vision figure agents
+    │   └── _reporting_guidelines.py   CONSORT/STROBE/TRIPOD/PRISMA/STARD
+    └── report/                        Report rendering
+        ├── __init__.py
+        ├── markdown.py                Markdown writer
+        ├── html.py                    HTML writer + findings renderer
+        ├── charts.py                  Radar and heatmap SVGs
+        ├── annotations.py             Annotated-manuscript writer
+        ├── summary.py                 Cross-paper revision dashboard
+        ├── shared.py                  Shared severity maps and helpers
+        └── _assets.py                 Embedded CSS and JS
 ```
 
 ## Requirements
 
 - Python 3.10+
 - [Ollama](https://ollama.ai) running locally, or an Anthropic API key
-- See `requirements.txt`: `ollama`, `anthropic`, `rich`, `markdown`, `pymupdf`,
-  `Pillow`, `requests`, `typing_extensions`
+- Dependencies are declared in `pyproject.toml` and installed automatically
+  by `pip install -e .`
+
+## Credits
+
+Developed by Rohan Bhansali and Brandon Westover for the BDSP Computational
+Clinical Neurology Lab at Massachusetts General Hospital / Harvard Medical
+School.
 
 ## License
 
-MIT
+MIT (see [`LICENSE`](LICENSE))

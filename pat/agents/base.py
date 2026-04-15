@@ -31,7 +31,7 @@ from .constants import (
 )
 
 if TYPE_CHECKING:
-    from providers import LLMProvider
+    from pat.providers import LLMProvider
 
 
 # ---------------------------------------------------------------------------

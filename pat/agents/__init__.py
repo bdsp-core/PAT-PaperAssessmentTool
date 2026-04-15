@@ -3,7 +3,7 @@ PAT (Paper Assessment Tool) - agent package.
 
 Re-exports the public API so callers continue to write::
 
-    from agents import ALL_AGENTS, Context, AgentResult, BaseAgent, create_ref_backend
+    from pat.agents import ALL_AGENTS, Context, AgentResult, BaseAgent, create_ref_backend
 
 regardless of the internal module layout.  The pipeline is organised as four
 phases:

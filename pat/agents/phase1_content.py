@@ -16,7 +16,7 @@ from __future__ import annotations
 import textwrap
 import time
 
-from parser import get_section, get_sections_combined
+from pat.parser import get_section, get_sections_combined
 
 from .base import AgentResult, BaseAgent, Context
 from .constants import (
@@ -37,7 +37,7 @@ class TextMetricsAgent(BaseAgent):
     priority = 0
 
     def run(self, ctx: Context) -> AgentResult:
-        from metrics import compute_metrics, format_metrics_text
+        from pat.metrics import compute_metrics, format_metrics_text
         t0 = time.time()
         m = compute_metrics(ctx.paper_text, ctx.config)
         findings = format_metrics_text(m)

@@ -12,7 +12,7 @@ import re
 import textwrap
 import time
 
-from parser import get_section, get_sections_combined
+from pat.parser import get_section, get_sections_combined
 
 from .base import AgentResult, BaseAgent, Context, _journal_context
 from .constants import (
@@ -118,7 +118,7 @@ class ChecklistAgent(BaseAgent):
     """).strip()
 
     def run(self, ctx: Context) -> AgentResult:
-        from metrics import compute_metrics
+        from pat.metrics import compute_metrics
         t0 = time.time()
 
         # ---- Programmatic (deterministic) checks ----
